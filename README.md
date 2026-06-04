@@ -1,75 +1,31 @@
-# Nuxt Minimal Starter
+# pp-news — Power Platform News Feed
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Single-page news feed built with Nuxt 3, Supabase, and Tailwind CSS.
 
 ## Setup
 
-Make sure to install dependencies:
-
 ```bash
-# npm
-npm install
-
-# pnpm
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+Create a `.env` file:
 
-Start the development server on `http://localhost:3000`:
+```
+SUPABASE_URL=https://xyoioywjjimjiawivhfb.supabase.co
+SUPABASE_KEY=<your-legacy-anon-key>
+```
+
+Get the key from Supabase → Settings → API → **Legacy anon, service_role API keys** → `anon`.
+
+## Development
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
-
-Build the application for production:
+## Production build
 
 ```bash
-# npm
-npm run build
-
-# pnpm
 pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
 pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
