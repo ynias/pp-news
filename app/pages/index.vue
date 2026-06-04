@@ -93,7 +93,11 @@ function formatTimestamp(ts: string | null): string {
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-100 mt-auto">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between text-xs text-gray-400">
-        <span>Powered by Claude</span>
+        <span>
+          Built by <span class="font-semibold text-gray-600">Ynias</span>
+          <span class="mx-1.5 text-gray-300">·</span>
+          Made with <span class="font-semibold text-gray-600">Claude</span>
+        </span>
         <span>Last scraped: {{ formatTimestamp(lastScrapedAt) }}</span>
       </div>
     </footer>
