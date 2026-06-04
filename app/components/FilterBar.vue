@@ -81,12 +81,15 @@ const emit = defineEmits<{
               :key="cat"
               @click="emit('update:selectedCategory', cat)"
               :class="[
-                'px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors',
+                'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors',
                 selectedCategory === cat
                   ? 'bg-blue-600 text-white shadow-sm'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200',
               ]"
-            >{{ cat }}</button>
+            >
+              <ProductIcon v-if="cat !== 'All'" :product="cat" :size="13" class="shrink-0" />
+              {{ cat }}
+            </button>
           </div>
         </div>
 

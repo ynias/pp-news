@@ -56,8 +56,9 @@ function formatDate(dateStr: string | null): string {
     <div class="flex items-center justify-between mb-4 gap-2 min-h-[1.5rem]">
       <span
         v-if="article.category"
-        :class="['text-[11px] font-bold px-2.5 py-1 rounded-full tracking-wide', categoryColors[article.category] ?? 'bg-gray-100 text-gray-600']"
+        :class="['inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full tracking-wide', categoryColors[article.category] ?? 'bg-gray-100 text-gray-600']"
       >
+        <ProductIcon :product="article.category" :size="12" class="shrink-0" />
         {{ article.category }}
       </span>
       <span v-else class="flex-1" />
