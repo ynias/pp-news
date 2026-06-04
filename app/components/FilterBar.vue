@@ -9,8 +9,10 @@ const props = defineProps<{
   searchQuery: string
   sortBy: SortOption
   isFiltered: boolean
+  showFavourites: boolean
   totalCount: number
   filteredCount: number
+  favouriteCount: number
 }>()
 
 const emit = defineEmits<{
@@ -19,6 +21,7 @@ const emit = defineEmits<{
   'update:selectedDateRange': [value: string]
   'update:searchQuery': [value: string]
   'update:sortBy': [value: SortOption]
+  'update:showFavourites': [value: boolean]
   'clearFilters': []
 }>()
 </script>
@@ -51,6 +54,22 @@ const emit = defineEmits<{
         >
           <option v-for="opt in SORT_OPTIONS" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
+
+        <!-- Favourites toggle -->
+        <button
+          @click="emit('update:showFavourites', !showFavourites)"
+          :class="[
+            'shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium border transition-colors',
+            showFavourites
+              ? 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'
+              : 'bg-gray-50 text-gray-500 border-gray-200 hover:bg-gray-100',
+          ]"
+        >
+          <svg class="h-4 w-4" :fill="showFavourites ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <span>{{ favouriteCount }}</span>
+        </button>
 
         <!-- Count + clear -->
         <div class="shrink-0 flex items-center gap-2 text-sm text-gray-400">

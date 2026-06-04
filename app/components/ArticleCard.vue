@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { Article } from '~/types/article'
 
-defineProps<{ article: Article }>()
+const props = defineProps<{ article: Article }>()
+
+const { toggle, isFavourite } = useFavourites()
+const liked = computed(() => isFavourite(props.article.id))
 
 const categoryColors: Record<string, string> = {
   'Power Apps': 'bg-blue-100 text-blue-700',
@@ -46,12 +49,28 @@ function formatDate(dateStr: string | null): string {
     target="_blank"
     rel="noopener noreferrer"
     :class="[
-      'flex flex-col bg-white border border-gray-200 border-t-[3px] rounded-xl p-6',
+      'relative flex flex-col bg-white border border-gray-200 border-t-[3px] rounded-xl p-6',
       'hover:shadow-xl hover:border-gray-300 hover:-translate-y-1 transition-all duration-200',
       'cursor-pointer group',
       article.category ? (categoryBorderColors[article.category] ?? 'border-t-gray-300') : 'border-t-gray-200',
     ]"
   >
+    <!-- Favourite button -->
+    <button
+      @click.prevent.stop="toggle(article.id)"
+      :class="[
+        'absolute top-3 right-3 p-1.5 rounded-full transition-colors z-10',
+        liked
+          ? 'text-red-500 hover:text-red-600 bg-red-50'
+          : 'text-gray-300 hover:text-red-400 hover:bg-red-50 opacity-0 group-hover:opacity-100',
+      ]"
+      :aria-label="liked ? 'Remove from favourites' : 'Add to favourites'"
+    >
+      <svg class="h-4 w-4" :fill="liked ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+      </svg>
+    </button>
+
     <!-- Badges row -->
     <div class="flex items-center justify-between mb-4 gap-2 min-h-[1.5rem]">
       <span
@@ -64,7 +83,7 @@ function formatDate(dateStr: string | null): string {
       <span v-else class="flex-1" />
       <span
         v-if="article.type"
-        :class="['text-[11px] font-bold px-2.5 py-1 rounded-full ml-auto shrink-0 tracking-wide', typeColors[article.type] ?? 'bg-gray-100 text-gray-600']"
+        :class="['text-[11px] font-bold px-2.5 py-1 rounded-full ml-auto shrink-0 tracking-wide mr-6', typeColors[article.type] ?? 'bg-gray-100 text-gray-600']"
       >
         {{ article.type }}
       </span>

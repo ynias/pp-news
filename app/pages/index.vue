@@ -20,6 +20,17 @@ const {
   goToPage,
 } = useArticles()
 
+const { favourites, isFavourite } = useFavourites()
+const showFavourites = ref(false)
+
+const displayedArticles = computed(() =>
+  showFavourites.value
+    ? paginatedArticles.value.filter((a) => isFavourite(a.id))
+    : paginatedArticles.value,
+)
+
+const favouriteCount = computed(() => favourites.value.length)
+
 onMounted(fetchArticles)
 
 function formatTimestamp(ts: string | null): string {
@@ -60,28 +71,31 @@ function formatTimestamp(ts: string | null): string {
       :search-query="searchQuery"
       :sort-by="sortBy"
       :is-filtered="isFiltered"
+      :show-favourites="showFavourites"
       :total-count="articles.length"
       :filtered-count="filteredArticles.length"
+      :favourite-count="favouriteCount"
       @update:selected-category="selectedCategory = $event"
       @update:selected-type="selectedType = $event"
       @update:selected-date-range="selectedDateRange = $event"
       @update:search-query="searchQuery = $event"
       @update:sort-by="sortBy = $event"
+      @update:show-favourites="showFavourites = $event"
       @clear-filters="clearFilters()"
     />
 
     <!-- Article grid -->
     <main class="flex-1">
       <ArticleGrid
-        :articles="paginatedArticles"
+        :articles="displayedArticles"
         :loading="loading"
         :error="error"
       />
     </main>
 
-    <!-- Pagination -->
+    <!-- Pagination (hidden when showing favourites) -->
     <Pagination
-      v-if="!loading && !error"
+      v-if="!loading && !error && !showFavourites"
       :current-page="currentPage"
       :total-pages="totalPages"
       :page-size="pageSize"
@@ -101,5 +115,8 @@ function formatTimestamp(ts: string | null): string {
         <span>Last scraped: {{ formatTimestamp(lastScrapedAt) }}</span>
       </div>
     </footer>
+
+    <!-- Cookie consent banner -->
+    <CookieBanner />
   </div>
 </template>
