@@ -53,11 +53,8 @@ function isInDateRange(dateStr: string | null, range: string): boolean {
       cutoff.setDate(today.getDate() - 7)
       return date >= cutoff
     }
-    case 'This month': {
-      const cutoff = new Date(today)
-      cutoff.setDate(today.getDate() - 30)
-      return date >= cutoff
-    }
+    case 'This month':
+      return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth()
     case 'Last 3 months': {
       const cutoff = new Date(today)
       cutoff.setDate(today.getDate() - 90)
