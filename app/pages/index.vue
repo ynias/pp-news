@@ -2,6 +2,7 @@
 const {
   articles,
   filteredArticles,
+  paginatedArticles,
   loading,
   error,
   selectedCategory,
@@ -10,9 +11,13 @@ const {
   searchQuery,
   sortBy,
   isFiltered,
+  currentPage,
+  pageSize,
+  totalPages,
   lastScrapedAt,
   fetchArticles,
   clearFilters,
+  goToPage,
 } = useArticles()
 
 onMounted(fetchArticles)
@@ -68,11 +73,22 @@ function formatTimestamp(ts: string | null): string {
     <!-- Article grid -->
     <main class="flex-1">
       <ArticleGrid
-        :articles="filteredArticles"
+        :articles="paginatedArticles"
         :loading="loading"
         :error="error"
       />
     </main>
+
+    <!-- Pagination -->
+    <Pagination
+      v-if="!loading && !error"
+      :current-page="currentPage"
+      :total-pages="totalPages"
+      :page-size="pageSize"
+      :total-filtered="filteredArticles.length"
+      @update:current-page="goToPage($event)"
+      @update:page-size="pageSize = $event"
+    />
 
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-100 mt-auto">

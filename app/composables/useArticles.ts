@@ -34,6 +34,8 @@ export const SORT_OPTIONS = [
   { label: 'Title A → Z', value: 'title-asc' },
 ] as const
 
+export const PAGE_SIZE_OPTIONS = [25, 50] as const
+export type PageSize = (typeof PAGE_SIZE_OPTIONS)[number]
 export type SortOption = (typeof SORT_OPTIONS)[number]['value']
 
 function isInDateRange(dateStr: string | null, range: string): boolean {
@@ -79,6 +81,10 @@ export function useArticles() {
   const searchQuery = ref<string>('')
   const sortBy = ref<SortOption>('date-desc')
 
+  // Pagination
+  const currentPage = ref(1)
+  const pageSize = ref<PageSize>(25)
+
   const filteredArticles = computed(() => {
     let result = articles.value.filter((a) => {
       const matchesCategory =
@@ -105,10 +111,24 @@ export function useArticles() {
         (a.title ?? '').localeCompare(b.title ?? ''),
       )
     }
-    // date-desc is the default from the DB query — no re-sort needed
 
     return result
   })
+
+  const totalPages = computed(() =>
+    Math.max(1, Math.ceil(filteredArticles.value.length / pageSize.value)),
+  )
+
+  const paginatedArticles = computed(() => {
+    const start = (currentPage.value - 1) * pageSize.value
+    return filteredArticles.value.slice(start, start + pageSize.value)
+  })
+
+  // Reset to page 1 whenever filters or page size change
+  watch(
+    [selectedCategory, selectedType, selectedDateRange, searchQuery, sortBy, pageSize],
+    () => { currentPage.value = 1 },
+  )
 
   const isFiltered = computed(
     () =>
@@ -120,9 +140,7 @@ export function useArticles() {
 
   const lastScrapedAt = computed<string | null>(() => {
     if (!articles.value.length) return null
-    const dates = articles.value
-      .map((a) => a.scraped_at)
-      .filter(Boolean) as string[]
+    const dates = articles.value.map((a) => a.scraped_at).filter(Boolean) as string[]
     if (!dates.length) return null
     return dates.reduce((max, d) => (d > max ? d : max))
   })
@@ -133,6 +151,10 @@ export function useArticles() {
     selectedDateRange.value = 'All'
     searchQuery.value = ''
     sortBy.value = 'date-desc'
+  }
+
+  function goToPage(page: number) {
+    currentPage.value = Math.max(1, Math.min(page, totalPages.value))
   }
 
   async function fetchArticles() {
@@ -156,6 +178,7 @@ export function useArticles() {
   return {
     articles,
     filteredArticles,
+    paginatedArticles,
     loading,
     error,
     selectedCategory,
@@ -164,12 +187,17 @@ export function useArticles() {
     searchQuery,
     sortBy,
     isFiltered,
+    currentPage,
+    pageSize,
+    totalPages,
     lastScrapedAt,
     fetchArticles,
     clearFilters,
+    goToPage,
     CATEGORIES,
     TYPES,
     DATE_RANGES,
     SORT_OPTIONS,
+    PAGE_SIZE_OPTIONS,
   }
 }
