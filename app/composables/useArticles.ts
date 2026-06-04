@@ -77,7 +77,7 @@ export function useArticles() {
 
   const selectedCategory = ref<string>('All')
   const selectedType = ref<string>('All')
-  const selectedDateRange = ref<string>('All')
+  const selectedDateRange = ref<string>('This month')
   const searchQuery = ref<string>('')
   const sortBy = ref<SortOption>('date-desc')
 
